@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'New Aggregator',
+    title: 'News Aggregator',
     description: 'All your news in one pace just the way you like it',
 };
 
