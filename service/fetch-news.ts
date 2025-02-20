@@ -1,6 +1,7 @@
 import apiConfig from '@/config/api-config';
 import { IDefaultNewsResponse, INewsQueryMapper, INewsQueryParams, INormalisedNewsArticle, SOURCES } from '@/types';
 import { normaliseNewsResponse, queryMapper } from '@/utils';
+import shuffleArray from '@/utils/suffle-array';
 import axios from 'axios';
 
 const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalisedNewsArticle>> => {
@@ -21,9 +22,13 @@ const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalis
         const responses = await Promise.allSettled<{ source: SOURCES; data: IDefaultNewsResponse }>(requests);
 
         // Return only successful calls
-        return responses
+        const results = responses
             .filter(res => res.status === 'fulfilled')
             .flatMap(res => normaliseNewsResponse(res.value.source, res.value.data));
+
+        const shuffledResults = shuffleArray(results);
+
+        return shuffledResults;
     } catch (error) {
         throw new Error(error);
     }

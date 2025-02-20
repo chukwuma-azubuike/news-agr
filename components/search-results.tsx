@@ -1,7 +1,6 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-// import { data } from './article-carousel';
 import CarouselCard from './ui/carousel-card';
 import { fetchNews } from '@/service';
 import { useState } from 'react';
