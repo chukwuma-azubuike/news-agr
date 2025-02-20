@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { addDays, format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
@@ -12,10 +12,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { SearchContext } from '@/context/search';
 
 const DateRangePicker: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className }) => {
-    const [date, setDate] = React.useState<DateRange | undefined>({
-        from: addDays(new Date(), -30),
-        to: new Date(),
-    });
+    const initialDateRange = useMemo(
+        () => ({
+            from: addDays(new Date(), -30),
+            to: new Date(),
+        }),
+        []
+    );
+
+    const [date, setDate] = React.useState<DateRange | undefined>(initialDateRange);
 
     const { handleDate } = React.useContext(SearchContext);
 

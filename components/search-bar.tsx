@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { ChangeEvent, FormEvent, useCallback, useContext, useState } from 'react';
 import DateRangePicker from './date-range-picker';
 import { Input } from './ui/input';
 import { SearchContext } from '@/context/search';
@@ -15,15 +15,18 @@ const SearchBar: React.FC = () => {
         setKeyword(e.target.value);
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleSubmit = useCallback(
+        (e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
 
-        if (!keyword) {
-            handleSearchMode(false);
-        }
-        handleKeyword(keyword);
-        handleSearchMode(true);
-    };
+            if (!keyword) {
+                handleSearchMode(false);
+            }
+            handleKeyword(keyword);
+            handleSearchMode(true);
+        },
+        [handleKeyword, handleSearchMode, keyword]
+    );
 
     return (
         <div className="relative mx-auto w-full">

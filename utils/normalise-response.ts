@@ -33,7 +33,7 @@ const normaliseNewsResponse = (
                 description: article.abstract,
                 url: article.web_url,
                 publishedAt: article.pub_date,
-                image: article.multimedia.length > 0 ? `https://nytimes.com/${article.multimedia[0].url}` : null,
+                image: article.multimedia.length > 0 ? `https://nytimes.com/${article.multimedia[0].url}` : null, // Construct image url with NY Times domain
             }));
         case SOURCES.guardian:
             const guardianAPIData = data as IGuardianResponse;

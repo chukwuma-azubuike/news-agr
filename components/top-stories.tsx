@@ -14,34 +14,34 @@ import ErrorAlert from './error-alert';
 const TopStoriesCarousel: React.FC = () => {
     const { date, page, pageSize, searchMode } = useContext(SearchContext);
 
-    const query: INewsQueryParams = {
-        page,
-        pageSize,
-        toDate: date[1],
-        fromDate: date[0],
-        keyword: 'latest',
-    };
+    const [fromDate, toDate] = date || [];
+
+    const query: INewsQueryParams | null =
+        fromDate && toDate ? { page, pageSize, toDate, fromDate, keyword: 'latest' } : null;
+
+    const queryKey = ['top-stories', query];
 
     const {
         data: news,
         error,
         isLoading,
     } = useQuery({
-        queryKey: ['top-stories', query],
-        queryFn: () => fetchNews(query),
+        queryKey,
+        queryFn: () => (query ? fetchNews(query) : Promise.resolve([])),
         refetchOnWindowFocus: false,
+        enabled: !!query,
     });
 
     const cards = useMemo(
-        () => news?.map((article, index) => <CarouselCard key={article.title} card={article} index={index} />),
+        () => (news ?? []).map((article, index) => <CarouselCard key={article.title} card={article} index={index} />),
         [news]
     );
 
     const skeletons = useMemo(
         () =>
-            Array(6)
-                .fill('')
-                .map((_, index) => <SkeletonCard key={`skeleton-${index}`} className="w-56 md:w-96" />),
+            Array.from({ length: 6 }).map((_, index) => (
+                <SkeletonCard key={`skeleton-${index}`} className="w-56 md:w-96" />
+            )),
         []
     );
 
@@ -57,11 +57,13 @@ const TopStoriesCarousel: React.FC = () => {
                     <ErrorAlert title={error?.name} description={error?.message} />
                 </div>
             )}
-            <div className={'mt-4 overflow-x-auto scrollbar-hide'}>
+            <div className="mt-4 overflow-x-auto scrollbar-hide">
                 {isLoading ? (
-                    <div className={'flex px-4 md:px-0 gap-4 mt-4 w-[300vw]'}>{skeletons}</div>
-                ) : (
+                    <div className="flex px-4 md:px-0 gap-4 mt-4 w-[300vw]">{skeletons}</div>
+                ) : news?.length ? (
                     <Carousel items={cards} />
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No top stories available.</p>
                 )}
             </div>
         </div>

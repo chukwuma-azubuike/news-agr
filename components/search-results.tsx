@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import CarouselCard from './ui/carousel-card';
 import { fetchNews } from '@/service';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import ErrorAlert from './error-alert';
 import SkeletonCard from './skeleton-card';
 import { INewsQueryParams } from '@/types';
@@ -13,14 +13,17 @@ import { SearchContext } from '@/context/search';
 const NewsSearchResults: React.FC = () => {
     const { keyword, date, page, pageSize, source, category } = useContext(SearchContext);
 
-    const query: INewsQueryParams = {
-        page,
-        keyword,
-        pageSize,
-        category,
-        toDate: date[1],
-        fromDate: date[0],
-    };
+    const query: INewsQueryParams = useMemo(
+        () => ({
+            page,
+            keyword,
+            pageSize,
+            category,
+            toDate: date[1],
+            fromDate: date[0],
+        }),
+        [page, keyword, pageSize, category, date]
+    );
 
     const {
         data: news,
@@ -38,8 +41,6 @@ const NewsSearchResults: React.FC = () => {
         refetch();
     }, [keyword, date, page, pageSize, source, category, refetch]);
 
-    console.log({ error });
-
     return (
         <div className="w-full space-y-8">
             <h2 className="max-w-screen-lg text-xl md:text-4xl ml-4 lg:mx-auto font-bold text-neutral-800 dark:text-neutral-200 font-sans">
@@ -55,11 +56,8 @@ const NewsSearchResults: React.FC = () => {
                     ? Array(6)
                           .fill('')
                           .map((_, index) => <SkeletonCard key={`skeleton-${index}`} className="w-full" />)
-                    : news &&
-                      !error &&
-                      news?.length > 0 &&
-                      news.map((article, index) => (
-                          <CarouselCard key={index} card={article} index={index} className="!w-full" />
+                    : news?.map((article, index) => (
+                          <CarouselCard key={article.url} card={article} index={index} className="!w-full" />
                       ))}
             </div>
         </div>

@@ -1,67 +1,42 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useMemo } from 'react';
 import { SOURCES } from '@/types';
 import { IAppContext } from './types';
 import { addDays, format } from 'date-fns';
 
-export const SearchContext = createContext<IAppContext>({} as IAppContext);
+export const SearchContext = createContext<IAppContext | null>(null);
 
 const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [date, setDate] = useState<Array<string>>([
+    const [date, setDate] = useState<string[]>([
         format(addDays(new Date(), -30), 'yyyy-MM-dd'),
         format(new Date(), 'yyyy-MM-dd'),
     ]);
-    const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(20);
-    const [category, setCategory] = useState<string>('politics');
-    const [keyword, setKeyword] = useState<string>('trump');
-    const [source, setSource] = useState<SOURCES | undefined>();
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(20);
+    const [category, setCategory] = useState('politics');
+    const [keyword, setKeyword] = useState('trump');
+    const [source, setSource] = useState<SOURCES | undefined>(undefined);
+    const [searchMode, setSearchMode] = useState(false);
 
-    const [searchMode, setSearchMode] = useState<boolean>(false);
-
-    const handleSearchMode = (value: boolean) => {
-        setSearchMode(value);
-    };
-
-    const handlePageSize = (value: number) => {
-        setPageSize(value);
-    };
-
-    const handlePage = (value: number) => {
-        setPage(value);
-    };
-
-    const handleDate = (value: Array<string>) => {
-        setDate(value);
-    };
-
-    const handleCategory = (value: string) => {
-        setCategory(value);
-    };
-
-    const handleKeyword = (value: string) => {
-        setKeyword(value);
-    };
-
-    const handleSource = (value: SOURCES) => {
-        setSource(value);
-    };
-
-    const values = {
-        page,
-        pageSize,
-        date,
-        category,
-        keyword,
-        source,
-        searchMode,
-        handleDate,
-        handleSource,
-        handleKeyword,
-        handleCategory,
-        handlePage,
-        handleSearchMode,
-        handlePageSize,
-    };
+    // Memoizing the context value to prevent unnecessary re-renders
+    const values = useMemo(
+        () => ({
+            page,
+            pageSize,
+            date,
+            category,
+            keyword,
+            source,
+            searchMode,
+            handleDate: setDate,
+            handleSource: setSource,
+            handleKeyword: setKeyword,
+            handleCategory: setCategory,
+            handlePage: setPage,
+            handleSearchMode: setSearchMode,
+            handlePageSize: setPageSize,
+        }),
+        [page, pageSize, date, category, keyword, source, searchMode]
+    );
 
     return <SearchContext.Provider value={values}>{children}</SearchContext.Provider>;
 };
