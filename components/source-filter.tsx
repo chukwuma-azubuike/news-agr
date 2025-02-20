@@ -8,7 +8,7 @@ import Image from 'next/image';
 const sources = [
     {
         name: SOURCES.newsAPI,
-        icon: <Image height={100} width={100} src="/images/news-api-logo.png" alt="new-api-logo" />,
+        icon: <Image height={100} width={100} src="/images/news-api-logo.png" alt="new-api-logo" className='w-16' />,
     },
     {
         name: SOURCES.guardian,
@@ -24,14 +24,14 @@ const SourceFilter: React.FC = () => {
     const handleCategory = () => {};
 
     return (
-        <div className="max-w-screen-xl mx-auto overflow-x-auto">
-            <ToggleGroup type="single" className="space-x-2" onValueChange={handleCategory}>
+        <div className="max-w-screen-lg w-full overflow-x-auto  scrollbar-hide mx-auto">
+            <ToggleGroup type="single" className="space-x-2 justify-start" onValueChange={handleCategory}>
                 {sources.map(({ name, icon }, index) => (
                     <ToggleGroupItem
                         aria-label={name}
                         key={`category-${index}`}
                         value={name.toLowerCase()}
-                        className="flex items-center gap-2 py-5 px-4 data-[state=on]:bg-gray-300"
+                        className="flex items-center gap-2 py-5 px-4"
                     >
                         <div className="">{icon}</div>
                     </ToggleGroupItem>

@@ -7,7 +7,7 @@ import { Button } from './button';
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
     ({ className, type, ...props }, ref) => {
         return (
-            <div className="relative max-w-screen-xl">
+            <div className="relative">
                 <input
                     type={type}
                     className={cn(
