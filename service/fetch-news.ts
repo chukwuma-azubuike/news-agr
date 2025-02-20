@@ -4,34 +4,39 @@ import { normaliseNewsResponse, queryMapper } from '@/utils';
 import shuffleArray from '@/utils/suffle-array';
 import axios from 'axios';
 
-const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalisedNewsArticle>> => {
-    // Convert query map to iterable array
-    const sources = Object.entries(queryMapper) as Array<[SOURCES, INewsQueryMapper]>;
+const fetchNews = async (
+    queryParams: INewsQueryParams,
+    sources?: [SOURCES, INewsQueryMapper][]
+): Promise<Array<INormalisedNewsArticle>> => {
+    const aggregatedSources = sources ?? (Object.entries(queryMapper) as Array<[SOURCES, INewsQueryMapper]>);
 
-    // Initialise request for each news source
-    const requests = sources.map(async ([source, mapper]) => {
-        const response = await axios.get(apiConfig[source].baseUrl, { params: mapper(queryParams) });
-
-        return {
-            source,
-            data: response.data,
-        };
+    const requests = aggregatedSources.map(async ([source, mapper]) => {
+        try {
+            const response = await axios.get(apiConfig[source].baseUrl, { params: mapper(queryParams) });
+            return { source, data: response.data };
+        } catch (error) {
+            throw new Error(`Failed to fetch news from ${source}: ${error.response?.data?.message || error.message}`);
+        }
     });
 
-    try {
-        const responses = await Promise.allSettled<{ source: SOURCES; data: IDefaultNewsResponse }>(requests);
+    const responses = await Promise.allSettled<{ source: SOURCES; data: IDefaultNewsResponse }>(requests);
 
-        // Return only successful calls
-        const results = responses
-            .filter(res => res.status === 'fulfilled')
-            .flatMap(res => normaliseNewsResponse(res.value.source, res.value.data));
+    // Extract successful results
+    const successfulResults = responses
+        .filter(res => res.status === 'fulfilled')
+        .flatMap(res => normaliseNewsResponse(res.value.source, res.value.data));
 
-        const shuffledResults = shuffleArray(results);
+    if (successfulResults.length === 0) {
+        // Extract errors from failed requests
+        const errors = responses
+            .filter(res => res.status === 'rejected')
+            .map(res => (res as PromiseRejectedResult).reason.message)
+            .join('; ');
 
-        return shuffledResults;
-    } catch (error) {
-        throw new Error(error);
+        throw new Error(errors);
     }
+
+    return shuffleArray<INormalisedNewsArticle>(successfulResults);
 };
 
 export default fetchNews;

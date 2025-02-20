@@ -14,7 +14,8 @@ interface FloatingNavProps {
 export const FloatingNav: React.FC<FloatingNavProps> = ({ children, className }) => {
     const { scrollYProgress } = useScroll();
 
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState<boolean>(true);
+    const [yPosition, setYPosition] = useState<number>(0);
 
     useMotionValueEvent(scrollYProgress, 'change', current => {
         // Check if current is not undefined and is a number
@@ -22,6 +23,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ children, className })
             const direction = current! - scrollYProgress.getPrevious()!;
 
             if (direction < 0) {
+                setYPosition(current < 0.0082 ? 12 : -50);
                 setVisible(true);
             } else {
                 setVisible(false);
@@ -37,14 +39,14 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ children, className })
                     y: -100,
                 }}
                 animate={{
-                    y: visible ? 0 : -100,
+                    y: visible ? yPosition : -100,
                     opacity: visible ? 1 : 0,
                 }}
                 transition={{
                     duration: 0.3,
                 }}
                 className={cn(
-                    `flex md:max-w-screen-lg fixed top-14 inset-x-0 px-4 md:px-0 mx-auto dark:border-white/[0.2] dark:bg-black z-40 items-center justify-center`,
+                    `flex md:max-w-screen-lg fixed top-14 inset-x-0 px-4 lg:px-0 mx-auto dark:border-white/[0.2] dark:bg-black z-40 items-center justify-center`,
                     className
                 )}
             >

@@ -4,8 +4,10 @@ import { INYTimesPayload, INYTimesResponse } from './ny-times';
 
 export interface INewsQueryParams {
     keyword: string;
-    sources?: string[];
+    sources?: Array<SOURCES>;
     category?: string;
+    pageSize?: number;
+    page?: number;
     toDate?: string; // ISO format
     fromDate?: string; // ISO format
 }

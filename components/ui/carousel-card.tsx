@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useContext, useCallback } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-
-import { IconX } from '@tabler/icons-react';
+import { LinkPreview } from './link-preview';
+import { motion } from 'framer-motion';
 
 import { useOutsideClick } from '@/hooks/use-outside-click';
 import { BlurImage } from '../blur-image';
@@ -52,49 +51,7 @@ const CarouselCard: React.FC<CardProps> = ({ card, index, layout = false, classN
     };
 
     return (
-        <>
-            {/* Modal */}
-            <AnimatePresence>
-                {open && (
-                    <div className="fixed inset-0 h-screen z-50 overflow-auto">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="bg-black/80 backdrop-blur-lg h-full w-full fixed inset-0"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            ref={containerRef}
-                            layoutId={layout ? `card-${card.title}` : undefined}
-                            className="max-w-5xl w-11/12 mx-auto bg-white dark:bg-neutral-900 h-fit  z-[60] my-10 p-4 md:p-10 rounded-3xl font-sans relative"
-                        >
-                            <button
-                                className="sticky top-4 h-8 w-8 right-0 ml-auto bg-black dark:bg-white rounded-full flex items-center justify-center"
-                                onClick={handleClose}
-                            >
-                                <IconX className="h-6 w-6 text-neutral-100 dark:text-neutral-900" />
-                            </button>
-                            <motion.p
-                                layoutId={layout ? `category-${card.title}` : undefined}
-                                className="text-base font-medium text-black dark:text-white"
-                            >
-                                {card.source}
-                            </motion.p>
-                            <motion.p
-                                layoutId={layout ? `title-${card.title}` : undefined}
-                                className="text-2xl md:text-5xl font-semibold text-neutral-700 mt-4 dark:text-white"
-                            >
-                                {card.title}
-                            </motion.p>
-                            <div className="py-10">{card.description}</div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-            {/* Card */}
+        <LinkPreview url={card.url} className="font-bold">
             <motion.button
                 layoutId={layout ? `card-${card.title}` : undefined}
                 onClick={handleOpen}
@@ -107,13 +64,13 @@ const CarouselCard: React.FC<CardProps> = ({ card, index, layout = false, classN
                 <div className="relative z-40 p-8">
                     <motion.p
                         layoutId={layout ? `category-${card.source}` : undefined}
-                        className="text-white text-sm md:text-base font-medium font-sans text-left"
+                        className="text-white text-sm md:text-base font-medium font-sans text-left truncate"
                     >
                         {card.source}
                     </motion.p>
                     <motion.p
                         layoutId={layout ? `title-${card.title}` : undefined}
-                        className="text-white text-xl md:text-3xl font-semibold max-w-xs text-left [text-wrap:balance] font-sans mt-2"
+                        className="text-white text-xl md:text-2xl font-semibold max-w-xs text-left [text-wrap:balance] font-sans mt-2 overflow-hidden text-ellipsis break-words line-clamp-6"
                     >
                         {card.title}
                     </motion.p>
@@ -122,7 +79,7 @@ const CarouselCard: React.FC<CardProps> = ({ card, index, layout = false, classN
                     <BlurImage src={card.image} alt={card.title} fill className="object-cover absolute z-10 inset-0" />
                 )}
             </motion.button>
-        </>
+        </LinkPreview>
     );
 };
 
