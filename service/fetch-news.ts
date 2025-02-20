@@ -3,7 +3,7 @@ import { IDefaultNewsResponse, INewsQueryMapper, INewsQueryParams, INormalisedNe
 import { normaliseNewsResponse, queryMapper } from '@/utils';
 import axios from 'axios';
 
-const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalisedNewsArticle[]>> => {
+const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalisedNewsArticle>> => {
     // Convert query map to iterable array
     const sources = Object.entries(queryMapper) as Array<[SOURCES, INewsQueryMapper]>;
 
@@ -23,10 +23,9 @@ const fetchNews = async (queryParams: INewsQueryParams): Promise<Array<INormalis
         // Return only successful calls
         return responses
             .filter(res => res.status === 'fulfilled')
-            .map(res => normaliseNewsResponse(res.value.source, res.value.data));
+            .flatMap(res => normaliseNewsResponse(res.value.source, res.value.data));
     } catch (error) {
-        console.error('Error fetching news', error);
-        return [];
+        throw new Error(error);
     }
 };
 

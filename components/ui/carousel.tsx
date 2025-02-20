@@ -70,6 +70,18 @@ const Carousel: React.FC<CarouselProps> = ({ items, initialScroll = 0 }) => {
         return window && window.innerWidth < 768;
     };
 
+    useEffect(() => {
+        const unsubscribe = setInterval(() => {
+            if (canScrollRight) {
+                scrollRight();
+            }
+        }, 4000);
+
+        return () => {
+            clearInterval(unsubscribe);
+        };
+    }, [canScrollRight]);
+
     return (
         <CarouselContext.Provider value={{ onCardClose: handleCardClose, currentIndex }}>
             <div className="relative w-full">
@@ -88,7 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({ items, initialScroll = 0 }) => {
                             'max-w-7xl mx-auto' // remove max-w-4xl if you want the carousel to span the full width of its container
                         )}
                     >
-                        {items.map((item, index) => (
+                        {items?.map((item, index) => (
                             <motion.div
                                 initial={{
                                     opacity: 0,
@@ -114,14 +126,14 @@ const Carousel: React.FC<CarouselProps> = ({ items, initialScroll = 0 }) => {
                 </div>
                 <div className="flex justify-end gap-2 mr-10">
                     <button
-                        className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
+                        className="relative z-20 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
                         onClick={scrollLeft}
                         disabled={!canScrollLeft}
                     >
                         <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
                     </button>
                     <button
-                        className="relative z-40 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
+                        className="relative z-20 h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center disabled:opacity-50"
                         onClick={scrollRight}
                         disabled={!canScrollRight}
                     >

@@ -6,7 +6,7 @@ const queryMapper: IQueryMapper = {
         from: query.fromDate,
         to: query.toDate,
         sources: query.sources?.join(','),
-        apiKey: process.env.NEXT_PUBLIC_NEWS_API_BASE_URL as string,
+        apiKey: process.env.NEXT_PUBLIC_NEWS_API_KEY as string,
     }),
 
     [SOURCES.guardian]: query => ({

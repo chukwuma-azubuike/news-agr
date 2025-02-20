@@ -1,13 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 import Carousel from './ui/carousel';
 import CarouselCard from './ui/carousel-card';
+import { fetchNews } from '@/service';
+import { useQuery } from '@tanstack/react-query';
+import { INewsQueryParams } from '@/types';
 
-const ArticleCardCarousel: React.FC = () => {
-    const cards = data.map((card, index) => <CarouselCard key={card.src} card={card} index={index} />);
+const TopStoriesCarousel: React.FC = () => {
+    const [query, setQuery] = useState<INewsQueryParams>({
+        keyword: 'politics',
+        fromDate: '2025-02-10',
+        toDate: '2025-02-10',
+    });
+
+    const {
+        data: news,
+        error,
+        isLoading,
+        isFetching,
+    } = useQuery({
+        queryKey: ['news', query],
+        queryFn: () => fetchNews(query),
+    });
+
+    const cards = news?.map((article, index) => <CarouselCard key={article.title} card={article} index={index} />);
 
     return (
         <div className="h-full w-full">
@@ -21,7 +40,7 @@ const ArticleCardCarousel: React.FC = () => {
     );
 };
 
-export default ArticleCardCarousel;
+export default TopStoriesCarousel;
 
 const DummyContent = () => {
     return (

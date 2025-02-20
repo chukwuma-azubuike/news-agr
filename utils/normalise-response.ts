@@ -8,12 +8,15 @@ import {
     SOURCES,
 } from '@/types';
 
-const normaliseNewsResponse = (source: keyof IQueryMapper, data: IDefaultNewsResponse): Array<INormalisedNewsArticle> => {
+const normaliseNewsResponse = (
+    source: keyof IQueryMapper,
+    data: IDefaultNewsResponse
+): Array<INormalisedNewsArticle> => {
     switch (source) {
         case SOURCES.newsAPI:
-            const newsAPIData = data as Array<INewsApiResponse>;
+            const newsAPIData = data as INewsApiResponse;
 
-            return newsAPIData.map(article => ({
+            return newsAPIData.articles.map(article => ({
                 source,
                 title: article.title,
                 description: article.description,
@@ -33,9 +36,9 @@ const normaliseNewsResponse = (source: keyof IQueryMapper, data: IDefaultNewsRes
                 image: article.multimedia.length > 0 ? `https://nytimes.com/${article.multimedia[0].url}` : null,
             }));
         case SOURCES.guardian:
-            const guardianAPIData = data as Array<IGuardianResponse>;
+            const guardianAPIData = data as IGuardianResponse;
 
-            return guardianAPIData.map(article => ({
+            return guardianAPIData.response.results.map(article => ({
                 source,
                 image: '',
                 url: article.webUrl,
@@ -46,6 +49,6 @@ const normaliseNewsResponse = (source: keyof IQueryMapper, data: IDefaultNewsRes
         default:
             return [];
     }
-}
+};
 
 export default normaliseNewsResponse;

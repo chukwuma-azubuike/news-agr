@@ -27,7 +27,7 @@ export interface INormalisedNewsArticle {
     publishedAt: string;
 }
 
-export type IDefaultNewsResponse = Array<INewsApiResponse> | Array<IGuardianResponse> | INYTimesResponse;
+export type IDefaultNewsResponse = INewsApiResponse | IGuardianResponse | INYTimesResponse;
 
 export enum SOURCES {
     newsAPI = 'News API',

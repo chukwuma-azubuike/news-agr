@@ -6,7 +6,7 @@ export interface INewApiPayload {
     sources?: string; // Use the /sources endpoint to locate these programmatically or look at the sources index.
 }
 
-export interface INewsApiResponse {
+interface INewsApiArticle {
     source: {
         id: string;
         name: string;
@@ -18,4 +18,10 @@ export interface INewsApiResponse {
     urlToImage: string;
     publishedAt: string;
     content: string;
+}
+
+export interface INewsApiResponse {
+    status: string;
+    totalResults: number;
+    articles: Array<INewsApiArticle>;
 }
