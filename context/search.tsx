@@ -1,13 +1,13 @@
 import { createContext, ReactNode, useState, useMemo } from 'react';
 import { SOURCES } from '@/types';
 import { IAppContext } from './types';
-import { addDays, format } from 'date-fns';
+import { addHours, format } from 'date-fns';
 
 export const SearchContext = createContext<IAppContext | null>(null);
 
 const SearchProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [date, setDate] = useState<string[]>([
-        format(addDays(new Date(), -30), 'yyyy-MM-dd'),
+        format(addHours(new Date(), -12), 'yyyy-MM-dd'),
         format(new Date(), 'yyyy-MM-dd'),
     ]);
     const [page, setPage] = useState(1);

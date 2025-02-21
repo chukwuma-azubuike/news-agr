@@ -3,21 +3,21 @@
 import React, { useContext } from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { SOURCES } from '@/types';
-import Image from 'next/image';
 import { SearchContext } from '@/context/search';
+import { sourceLogos } from '@/constants/source-logos';
 
 const sources = [
     {
         name: SOURCES.newsAPI,
-        icon: <Image height={100} width={100} src="/images/news-api-logo.png" alt="new-api-logo" className="w-16" />,
+        icon: sourceLogos[SOURCES.newsAPI],
     },
     {
         name: SOURCES.guardian,
-        icon: <Image height={100} width={100} src="/images/the-guardian-logo.png" alt="guardian-logo" />,
+        icon: sourceLogos[SOURCES.guardian],
     },
     {
         name: SOURCES.nyTimes,
-        icon: <Image height={100} width={100} src="/images/ny-times-logo.png" alt="ny-times-logo" />,
+        icon: sourceLogos[SOURCES.nyTimes],
     },
 ];
 

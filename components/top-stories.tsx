@@ -53,7 +53,7 @@ const TopStoriesCarousel: React.FC = () => {
                 Top Stories
             </h2>
             {error && (
-                <div className="max-w-screen-lg px-4 md:mx-auto">
+                <div className="max-w-screen-lg mt-4 px-4 md:mx-auto">
                     <ErrorAlert title={error?.name} description={error?.message} />
                 </div>
             )}

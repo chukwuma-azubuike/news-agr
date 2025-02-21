@@ -9,7 +9,7 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
     title: 'News AGR',
-    description: 'All your news in one pace just the way you like it',
+    description: 'All your news in one place, just the way you like it',
 };
 
 const RootLayout: React.FC<Readonly<{ children: React.ReactNode }>> = ({ children }) => {

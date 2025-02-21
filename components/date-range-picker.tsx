@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useMemo } from 'react';
-import { addDays, format } from 'date-fns';
+import { addHours, format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 
@@ -14,7 +14,7 @@ import { SearchContext } from '@/context/search';
 const DateRangePicker: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className }) => {
     const initialDateRange = useMemo(
         () => ({
-            from: addDays(new Date(), -30),
+            from: addHours(new Date(), -12),
             to: new Date(),
         }),
         []

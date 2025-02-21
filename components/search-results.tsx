@@ -34,6 +34,7 @@ const NewsSearchResults: React.FC = () => {
     } = useQuery({
         queryKey: ['search', query],
         queryFn: () => fetchNews(query, source ? [[source, queryMapper[source]]] : undefined),
+        refetchOnWindowFocus: false,
     });
 
     // Trigger a refetch on source change
@@ -52,13 +53,17 @@ const NewsSearchResults: React.FC = () => {
                 </div>
             )}
             <div className="px-4 lg:px-0 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 w-full max-w-screen-lg md:mx-auto">
-                {isLoading || isFetching
-                    ? Array(6)
-                          .fill('')
-                          .map((_, index) => <SkeletonCard key={`skeleton-${index}`} className="w-full" />)
-                    : news?.map((article, index) => (
-                          <CarouselCard key={article.url} card={article} index={index} className="!w-full" />
-                      ))}
+                {isLoading || isFetching ? (
+                    Array(6)
+                        .fill('')
+                        .map((_, index) => <SkeletonCard key={`skeleton-${index}`} className="w-full" />)
+                ) : news?.length ? (
+                    news?.map((article, index) => (
+                        <CarouselCard key={article.url} card={article} index={index} className="!w-full" />
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500 mt-4">No search results available.</p>
+                )}
             </div>
         </div>
     );
